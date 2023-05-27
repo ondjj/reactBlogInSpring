@@ -9,7 +9,12 @@ import java.util.Date;
 public class HelloController {
 
     @GetMapping("/api/hello")
-    public String hello(){
-        return "안녕하세요. 현재 서버 시간은 " + new Date() +"입니다. \n";
+    public String hello() {
+        return "안녕하세요. 현재 서버 시간은 " + new Date() + "입니다. \n";
+    }
+
+    @GetMapping("http://localhost:3000/")
+    public String home(){
+        return "";
     }
 }
