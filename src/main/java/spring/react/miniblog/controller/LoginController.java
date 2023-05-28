@@ -3,6 +3,7 @@ package spring.react.miniblog.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,14 +15,24 @@ import spring.react.miniblog.repository.UserRepository;
 import spring.react.miniblog.service.UserService;
 
 @RestController
-@RequestMapping("/api")
 public class LoginController {
 
     private final UserService userService;
+    @Autowired private  UserRepository userRepository;
+    @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     @Autowired
     public LoginController(UserService userService){
         this.userService = userService;
+    }
+
+    @PostMapping("/join")
+    public String join(@RequestBody User users) {
+        users.setPassword(bCryptPasswordEncoder.encode(users.getPassword()));
+        users.setRoles("ROLE_USER");
+        userRepository.save(users);
+        return "회원가입 완료";
     }
 
     /**TODO: 2023-05-27, Sat, 23:53  -JEON
@@ -39,13 +50,13 @@ public class LoginController {
 
         if (isUsernameExists && isPasswordMatch){
             // 사용자 인증에 성공하면 액세스 토큰을 생성하고 응답에 포함시킵니다.
-            String accessToken = generateAccessToken(request.getUsername());
+//            String accessToken = generateAccessToken(request.getUsername());
 
             // 로그인 성공 응답 데이터 생성
-            LoginResponse response = new LoginResponse(accessToken,"200 OK", username);
+//            LoginResponse response = new LoginResponse(accessToken,"200 OK", username);
 
             // 로그인 성공 응답 반환
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok("OK");
         }else {
             LoginResponse response = new LoginResponse(null, "아이디 또는 비밀번호가 올바르지 않습니다.", null);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);

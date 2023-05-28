@@ -1,8 +1,8 @@
 package spring.react.miniblog.dto;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class LoginRequest {
 
     private String username;
