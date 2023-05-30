@@ -1,4 +1,4 @@
-package spring.react.miniblog.config.jwt;
+package spring.react.miniblog.config.jwt.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import spring.react.miniblog.config.auth.PrincipalDetails;
+import spring.react.miniblog.config.jwt.JwtProperties;
 import spring.react.miniblog.domain.User;
 import spring.react.miniblog.repository.UserRepository;
 

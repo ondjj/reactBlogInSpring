@@ -20,7 +20,11 @@ public class User {
 
     private String username;
     private String password;
+    private String refreshToken;
+
     private String roles; // USER, ADMIN
+
+
 
     public List<String> getRoleList(){
         if (this.roles.length() > 0) {

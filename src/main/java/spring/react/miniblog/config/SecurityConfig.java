@@ -10,8 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import spring.react.miniblog.config.jwt.JwtAuthenticationFilter;
-import spring.react.miniblog.config.jwt.JwtAuthorizationFilter;
+import spring.react.miniblog.config.jwt.filter.JwtAuthenticationFilter;
+import spring.react.miniblog.config.jwt.filter.JwtAuthorizationFilter;
+import spring.react.miniblog.config.jwt.service.JwtService;
 import spring.react.miniblog.repository.UserRepository;
 
 @Configuration
@@ -22,6 +23,8 @@ public class SecurityConfig {
     @Autowired
     private final UserRepository userRepository;
 
+    @Autowired
+    private final JwtService jwtService;
     @Autowired
     private final CorsConfig corsConfig;
 
@@ -52,7 +55,7 @@ public class SecurityConfig {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
                     .addFilter(corsConfig.corsFilter())
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager))
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtService))
                     .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository));
         }
     }
