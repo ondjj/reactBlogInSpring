@@ -1,13 +1,9 @@
 package spring.react.miniblog.config.jwt.filter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -137,7 +133,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         claims.put("username", principalDetails.getUser().getUsername());
 
         // JWT 토큰 만들기 3 : 만료 시간 설정(Access token) -> 1000 * 60L * 60L * 1 = 1시간, 500 * 60L * 60L * 1 = 30분
-        Long expiredTime = 500 * 60L * 60L;
+        long expiredTime = 500 * 60L * 60L;
         Date date = new Date();
         date.setTime(date.getTime() + expiredTime);
         System.out.println("access_token 만료일자 : " + date);
@@ -156,22 +152,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         System.out.println("access_token = " + access_token);
 
-        // JWT 토큰 Builder : refresh token -> expiredTime을 24시간보다 약간 더 크게 설정
-        expiredTime *= 23;
-        expiredTime += 100000;
-        date.setTime(System.currentTimeMillis() + expiredTime);
-
-        String refresh_token = Jwts.builder()
-                .setHeader(headers)
-                .setSubject("refresh_token by Spring")
-                .setExpiration(date)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-
-        System.out.println("refresh_token = " + refresh_token);
-
-        // refresh token 저장
-        jwtService.setRefreshToken(principalDetails.getUser().getUsername(), refresh_token);
+        if (principalDetails.getUser().getRefreshToken() == null){
+            extracted(principalDetails, headers, expiredTime, date, key);
+        }else {
+            System.out.println("current refresh token = " + principalDetails.getUser().getRefreshToken());
+        }
 
         // JWT 토큰 response header 에 담음 (주의 : Bearer 다음에 한 칸 띄우고 저장 해야한다.)
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + access_token);
@@ -197,6 +182,25 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 //                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 //
 //        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
+    }
+
+    private void extracted(PrincipalDetails principalDetails, Map<String, Object> headers, long expiredTime, Date date, Key key) {
+        // JWT 토큰 Builder : refresh token -> expiredTime을 24시간보다 약간 더 크게 설정
+        expiredTime *= 23;
+        expiredTime += 100000;
+        date.setTime(System.currentTimeMillis() + expiredTime);
+
+        String refresh_token = Jwts.builder()
+                .setHeader(headers)
+                .setSubject("refresh_token by Spring")
+                .setExpiration(date)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        System.out.println("new refresh_token = " + refresh_token);
+
+        // refresh token 저장
+        jwtService.setRefreshToken(principalDetails.getUser().getUsername(), refresh_token);
     }
 
 }

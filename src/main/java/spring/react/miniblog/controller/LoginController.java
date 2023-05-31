@@ -49,12 +49,6 @@ public class LoginController {
         boolean isPasswordMatch = userService.isPasswordMatch(username, password);
 
         if (isUsernameExists && isPasswordMatch){
-            // 사용자 인증에 성공하면 액세스 토큰을 생성하고 응답에 포함시킵니다.
-//            String accessToken = generateAccessToken(request.getUsername());
-
-            // 로그인 성공 응답 데이터 생성
-//            LoginResponse response = new LoginResponse(accessToken,"200 OK", username);
-
             // 로그인 성공 응답 반환
             return ResponseEntity.ok("OK");
         }else {
@@ -63,12 +57,4 @@ public class LoginController {
         }
     }
 
-    private String generateAccessToken(String username) {
-        // 액세스 토큰 생성 로직 구현
-        // 예를 들어, JWT 생성 등의 방법으로 액세스 토큰을 생성할 수 있습니다.
-
-        // 생성된 액세스 토큰 반환
-        String accessToken = "sample_access_token";
-        return accessToken;
-    }
 }

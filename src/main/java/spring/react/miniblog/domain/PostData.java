@@ -20,4 +20,10 @@ public class PostData {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public PostData(String subject, String textArea, User user) {
+        this.subject = subject;
+        this.textArea = textArea;
+        this.user = user;
+    }
 }
