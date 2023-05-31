@@ -173,10 +173,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // refresh token 저장
         jwtService.setRefreshToken(principalDetails.getUser().getUsername(), refresh_token);
 
-        // JWT 토큰 response header에 담음 (주의 : Bearer 다음에 한 칸 띄우고 저장 해야한다.)
+        // JWT 토큰 response header 에 담음 (주의 : Bearer 다음에 한 칸 띄우고 저장 해야한다.)
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + access_token);
 
-        // access token 쿠키에 저장
+        // access token 쿠키에도 저장
         Cookie cookie = new Cookie("access_token", access_token);
         // 쿠키는 항상 도메인 주소가 루트로 설정되어 있어야 모든 요청에서 사용 할 수 있다.
         cookie.setPath("/");
